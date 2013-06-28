@@ -1,0 +1,18 @@
+{
+  "hostTypes": [
+    {
+      "hostType": "checker-test",
+      "processes": [
+        { "processType": "checker-test", "port": 8080 }
+      ]
+    }
+  ],
+  "processTypes": [
+    {
+      "processType": "checker-test",
+      "checkerType": "http",
+      "path": "/ping",
+      "secure": false
+    }
+  ]
+}

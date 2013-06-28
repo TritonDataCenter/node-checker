@@ -1,0 +1,11 @@
+{
+  "hosts": [
+    {
+      "hostType": "checker-test",
+      "ip": "127.0.0.1",
+      "uuid": "uuid-uuid-uuid",
+      "datacenter": "nate.dev",
+      "server": "uuid-uuid-uuid"
+    }
+  ]
+}

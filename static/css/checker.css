@@ -1,0 +1,92 @@
+.healthy-host,
+.unhealthy-host,
+.noop-host {
+    border-top: 1px #cccccc solid;
+    border-right: 1px #cccccc solid;
+    border-bottom: 1px #cccccc solid;
+    border-left: 1px #cccccc solid;
+    position: relative;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    top: 1px;
+}
+
+.healthy-host {
+    background-color: #00FF00;
+}
+
+.unhealthy-host {
+    background-color: #FF3333;
+}
+
+.noop-host {
+    background-color: #3399FF;
+}
+
+.status-table {
+    border: 1px #cccccc solid;
+    border-collapse: collapse;
+    padding-right: 5px;
+    margin: 4px;
+    width: 100%;
+}
+
+.status-left {
+    width: 50%;
+    text-align: left;
+}
+
+.status-right {
+    width: 50%;
+    text-align: right;
+}
+
+.arch-table {
+    border: 1px #cccccc solid;
+    border-collapse: collapse;
+    padding-right: 5px;
+    margin: 4px;
+    width: 100%;
+}
+
+/* Make this as small as possible */
+.arch-table-th-header {
+    width: 1%;
+}
+
+/* Make this as large as possible */
+.arch-table-th-td {
+    width: 100%;
+}
+
+.arch-table th {
+    font-weight: normal;
+    padding: 5px;
+    border: 1px #cccccc solid;
+}
+
+.arch-table td {
+    vertical-align: top;
+    padding: 5px;
+    border: 1px #cccccc solid;
+}
+
+.host-table {
+    display: inline;
+    border: 1px #cccccc solid;
+    border-collapse: collapse;
+    padding-right: 5px;
+    margin: 4px;
+}
+
+.host-table th {
+    font-weight: normal;
+    padding: 2px;
+    border: 1px #cccccc solid;
+}
+
+.host-table td {
+    padding: 2px;
+    border: 0px;
+}
