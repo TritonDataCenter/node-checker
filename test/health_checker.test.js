@@ -67,7 +67,7 @@ var testCfg = {
 
 var LOG = bunyan.createLogger({
         level: (process.env.LOG_LEVEL || 'debug'),
-        name: 'manowar',
+        name: 'checker',
         stream: process.stdout
 });
 

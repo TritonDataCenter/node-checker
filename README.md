@@ -4,18 +4,22 @@ node-checker
 ## Node Checker
 
 Node Checker is a small component to aid in determining whether the components
-in a distributed system are up and responsive.  It consists of a small server
-that periodically health checks components and a webapp that displays status.
-Node checker focuses on monitoring process responsiveness and giving a concise
-view of the system.
+in a distributed system are up and responsive.  It consists of a class that
+periodically health checks components and a webapp that displays status.  Node
+checker focuses on monitoring process responsiveness and giving a concise view
+of the system.
+
+Note that the server included can be used for simple deployments, but works off
+static confif files.  For more complicated deployment scenarios, it is expected
+that the consumer of node-checker will implement a system for dynamically adding
+and removing hosts from the health checker.
 
 ## Spinnnig up the test server
 
 Run:
 
-    export CHECKER_CONFIG_FILE=./etc/checker-test.json && \
-    export CHECKER_HOSTS_FILE=./etc/checker-test-hosts.json && \
-    node ./server.js | bunyan
+    node ./server.js -c ./etc/checker-test.json \
+       -c ./etc/checker-test-hosts.json | bunyan
 
 Then point your browser to:
 

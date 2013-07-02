@@ -1,3 +1,5 @@
+// Copyright 2013 Nate Fitch, All rights reserved.
+
 // http://learn.jquery.com/plugins/basic-plugin-creation/
 (function($) {
         var REFRESH_PERIOD = 15000;

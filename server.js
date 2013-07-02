@@ -3,14 +3,10 @@
 var bunyan = require('bunyan');
 var express = require('express');
 var fs = require('fs');
+var getopt = require('posix-getopt');
+var lib = require('./lib');
+var path = require('path');
 var vasync = require('vasync');
-
-//Health Check
-var Checker = require('./lib/health_checker');
-var DnsChecker = require('./lib/checkers/dns_checker');
-var HttpChecker = require('./lib/checkers/http_checker');
-var NoopChecker = require('./lib/checkers/noop_checker');
-var TcpChecker = require('./lib/checkers/tcp_checker');
 
 
 
@@ -22,25 +18,23 @@ var LOG = bunyan.createLogger({
         name: 'checker',
         stream: process.stdout
 });
-var CHECKER_CONFIG_FILE = process.env.CHECKER_CONFIG_FILE;
-var CHECKER_HOSTS_FILE = process.env.CHECKER_HOSTS_FILE;
-var CHECKER = null;
+var HEALTH_CHECKER = null;
 
 
 
 //--- Handlers
 
 function handleCheckerRequest(req, res) {
-        if (!CHECKER) {
+        if (!HEALTH_CHECKER) {
                 res.send(JSON.stringify({
-                        'code': 'CheckerNoeConfigured',
+                        'code': 'CheckerNotConfigured',
                         'message': 'The health checker is not configured on ' +
                                 'this server.'
                 }));
                 return;
         }
 
-        var stats = JSON.stringify(CHECKER.getStats());
+        var stats = JSON.stringify(HEALTH_CHECKER.getStats());
         res.send(stats);
 }
 
@@ -74,48 +68,52 @@ function audit(req, res, next) {
 }
 
 
-function registerCheckers(checker, cb) {
-        if (!checker) {
-                cb();
-                return;
+function usage(msg) {
+        if (msg) {
+                console.error(msg);
         }
-        vasync.pipeline({
-                'funcs': [
-                        function loadDnsChecker(_, subcb) {
-                                CHECKER.registerChecker({
-                                        'label': 'dns',
-                                        'checker': DnsChecker
-                                }, subcb);
-                        },
-                        function loadHttpChecker(_, subcb) {
-                                CHECKER.registerChecker({
-                                        'label': 'http',
-                                        'checker': HttpChecker
-                                }, subcb);
-                        },
-                        function loadNoopChecker(_, subcb) {
-                                CHECKER.registerChecker({
-                                        'label': 'noop',
-                                        'checker': NoopChecker
-                                }, subcb);
-                        },
-                        function loadTcpChecker(_, subcb) {
-                                CHECKER.registerChecker({
-                                        'label': 'tcp',
-                                        'checker': TcpChecker
-                                }, subcb);
-                        }
-                ]
-        }, function (err) {
-                cb(err);
-        });
+        var str  = 'usage: ' + path.basename(process.argv[1]);
+        str += ' [-c config_file]';
+        str += ' [-p port]';
+        console.error(str);
+        process.exit(1);
+}
+
+
+function parseOptions() {
+        var option;
+        var opts = {
+                'configFiles': [],
+                'port': 8080
+        };
+        var parser = new getopt.BasicParser('c:p:',
+                                            process.argv);
+        while ((option = parser.getopt()) !== undefined && !option.error) {
+                switch (option.option) {
+                case 'c':
+                        opts.configFiles.push(option.optarg);
+                        break;
+                case 'p':
+                        opts.port = parseInt(option.optarg, 10);
+                        break;
+                default:
+                        usage('Unknown option: ' + option.option);
+                        break;
+                }
+        }
+
+        if (opts.configFiles.length === 0) {
+                usage('No config files specified.');
+        }
+
+        return (opts);
 }
 
 
 
 //--- Main
 
-var port = parseInt(process.argv[2], 10) || DEFAULT_PORT;
+var opts = parseOptions();
 
 var app = express();
 
@@ -130,52 +128,51 @@ app.use(express.static(__dirname + '/static'));
 // Start the checker, then the server
 vasync.pipeline({
         'funcs': [
-                function initChecker(_, subcb) {
-                        if (!CHECKER_CONFIG_FILE && !CHECKER_HOSTS_FILE) {
-                                LOG.fatal({
-                                        checkerConfigFile: CHECKER_CONFIG_FILE,
-                                        checkerHostsFile: CHECKER_HOSTS_FILE
-                                }, 'env vars not specified, not starting ' +
-                                         'checker.');
-                                subcb(new Error (
-                                        'Config files aren\'t present'));
-                                return;
-                        }
-                        LOG.info({
-                                checkerConfigFile: CHECKER_CONFIG_FILE,
-                                checkerHostsFile: CHECKER_HOSTS_FILE
-                        }, 'env vars for checker.');
-                        var cfg;
-                        var hosts;
-                        try {
-                                cfg = JSON.parse(fs.readFileSync(
-                                        CHECKER_CONFIG_FILE));
-                                hosts = JSON.parse(fs.readFileSync(
-                                        CHECKER_HOSTS_FILE));
-                        } catch (err) {
-                                subcb(err);
-                                return;
-                        }
-                        CHECKER = new Checker({ log: LOG });
-                        //Kinda hacky...
-                        CHECKER._loadedCfg = cfg;
-                        CHECKER._loadedHostsCfg = hosts;
-                        registerCheckers(CHECKER, subcb);
+                function createChecker(_, subcb) {
+                        var o = { log: LOG };
+                        lib.createHealthChecker(o, function (err, c) {
+                                if (err) {
+                                        subcb(err);
+                                        return;
+                                }
+                                HEALTH_CHECKER = c;
+                                subcb();
+                        });
                 },
-                function registerCheckerCfg(_, subcb) {
-                        CHECKER.registerFromConfig(CHECKER._loadedCfg, subcb);
-                },
-                function registerCheckerHostCfg(_, subcb) {
-                        CHECKER.registerFromConfig(CHECKER._loadedHostsCfg,
-                                                   subcb);
+                function loadConfigs(_, subcb) {
+                        var i = 0;
+                        function loadNextConfig() {
+                                var f = opts.configFiles[i];
+                                if (f === undefined) {
+                                        subcb();
+                                        return;
+                                }
+                                try {
+                                        var j = fs.readFileSync(f);
+                                        var c = JSON.parse(j);
+                                } catch (e) {
+                                        subcb(e);
+                                        return;
+                                }
+                                function reged(err) {
+                                        if (err) {
+                                                subcb(err);
+                                                return;
+                                        }
+                                        ++i;
+                                        loadNextConfig();
+                                }
+                                HEALTH_CHECKER.registerFromConfig(c, reged);
+                        }
+                        loadNextConfig();
                 },
                 function startChecker(_, subcb) {
                         LOG.info('starting checker...');
-                        CHECKER.start(subcb);
+                        HEALTH_CHECKER.start(subcb);
                 },
                 function startServer(_, subcb) {
-                        LOG.info({ port: port }, 'Starting server...');
-                        app.listen(port);
+                        LOG.info({ port: opts.port }, 'Starting server...');
+                        app.listen(opts.port);
                         subcb();
                 }
         ]
