@@ -7,7 +7,12 @@
         //--- Fetch the data
         function getData(cb) {
                 var self = this;
+                //When it fails to GET it returns err -> 'error'.  That's
+                // a terrible thing to display...
                 function error(xhr, err) {
+                        if (err === 'error') {
+                                err = new Error('Unable to contact server.');
+                        }
                         cb(err);
                 }
 
@@ -33,7 +38,7 @@
         function enableWaiting() {
                 var self = this;
                 $('#waiting', self).each(function () {
-                        this.innerHTML = '<img src="css/images/ui-anim_basic_16x16.gif">';
+                        $(this).append(self.waitingImage);
                 });
         }
 
@@ -58,9 +63,12 @@
         //--- Error
         function displayError(message) {
                 var self = this;
+                if (!message) {
+                        message = 'Something unexpected happened...';
+                }
                 $('#error', self).each(function () {
-                        this.innerHTML = ['<font class=error>', message,
-                                          '</font>'].join();
+                        this.innerHTML = '<font class=error>' + message +
+                                '</font>';
                         //Display for 7 seconds, the hide it.
                         setTimeout(function () {
                                 $('#error', self).each(function () {
@@ -235,12 +243,12 @@
                 var self = this;
                 enableWaiting.call(self);
                 getData.call(self, function (err, data) {
+                        disableWaiting.call(self);
                         if (err) {
                                 displayError.call(self, err.message);
                                 cb();
                                 return;
                         }
-                        disableWaiting.call(self);
                         self.currentData = data;
                         displayData.call(self);
                         cb();
@@ -287,6 +295,7 @@
                                          '</table>' +
                                        '</div>')
                                 .append('<div id="hosts"></div>');
+                        self.waitingImage = $('<img class="waiting" src="css/images/ui-anim_basic_16x16.gif"/>');
                         scheduleRefresh.call(self);
                 });
         };

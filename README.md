@@ -10,7 +10,7 @@ checker focuses on monitoring process responsiveness and giving a concise view
 of the system.
 
 Note that the server included can be used for simple deployments, but works off
-static confif files.  For more complicated deployment scenarios, it is expected
+static config files.  For more complicated deployment scenarios, it is expected
 that the consumer of node-checker will implement a system for dynamically adding
 and removing hosts from the health checker.
 
