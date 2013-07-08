@@ -214,7 +214,10 @@
                         for (var j = 0; j < dcs.length; ++j) {
                                 var dc = dcs[j];
                                 var td = $('<td>');
-                                var hs = Object.keys(d[t][dc] || {});
+                                var hs = [];
+                                if (d[t]) {
+                                        hs = Object.keys(d[t][dc] || {});
+                                }
                                 for (var k = 0; k < hs.length; ++k) {
                                         var h = hs[k];
                                         var hostW = hostWidget.call(self,
