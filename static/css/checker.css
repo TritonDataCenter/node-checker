@@ -1,3 +1,7 @@
+div, span, p, td {
+    font-family: Arial, sans-serif;
+}
+
 .waiting {
     float: left;
     padding-right: 5px;

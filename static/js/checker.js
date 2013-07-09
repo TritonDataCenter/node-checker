@@ -97,7 +97,9 @@
                 var dg = null;
                 div.click(function (eve) {
                         if (!dg) {
-                                dg = $('<div class="host-popover"></div>');
+                                dg = $('<div class="host-popover" ' +
+                                       'title="' + process.uuid + '"' +
+                                       '></div>');
                                 div.append(dg);
                                 //TODO: Spark lines and other fun!
                                 dg.append('<p><pre>' +
@@ -105,12 +107,6 @@
                                           '</pre></p>');
                                 var pos = div.position();
                                 var width = div.width();
-                                console.log({
-                                        pos: pos,
-                                        width: width,
-                                        x: pos.left + width + 5,
-                                        y: pos.top
-                                });
                                 dg.dialog({
                                         dialog: true,
                                         buttons: {
