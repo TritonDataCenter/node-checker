@@ -112,7 +112,9 @@
                         tr('<div class="healthy-text">Healthy</div>' + asof);
                 } else {
                         var text = "Unhealthy: " +
-                                (process.stats.lastErr.code || 'Unknown');
+                                (process.stats.lastErr.code ||
+                                 process.stats.lastErr.name ||
+                                 'Unknown');
                         tr('<div class="unhealthy-text">' + text + '</div>' +
                            asof);
                 }
