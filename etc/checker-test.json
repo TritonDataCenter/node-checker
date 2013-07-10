@@ -3,7 +3,8 @@
     {
       "hostType": "checker-test",
       "processes": [
-        { "processType": "checker-test", "port": 8080 }
+        { "processType": "checker-test", "port": 8080 },
+        { "processType": "checker-test", "port": 8090 }
       ]
     }
   ],

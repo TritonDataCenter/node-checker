@@ -19,6 +19,7 @@
                 "node": "0.8.18"
         },
         "scripts": {
-                "start": "node ./server.js"
+                "start": "node ./server.js",
+                "test": "find test/ -name '*.test.js' | xargs -n 1 ./node_modules/nodeunit/bin/nodeunit"
         }
 }

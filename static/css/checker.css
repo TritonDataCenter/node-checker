@@ -23,14 +23,28 @@ div, span, p, td {
     height: 10px;
     display: inline-block;
     top: 1px;
+    cursor: hand;
+    cursor: pointer;
 }
 
 .healthy-host {
     background-color: #00FF00;
 }
 
+.healthy-text {
+    color: #00FF00;
+}
+
 .unhealthy-host {
     background-color: #FF3333;
+}
+
+.unhealthy-text {
+    color: #FF3333;
+}
+
+.tiny-text {
+    font-size: 9px;
 }
 
 .noop-host {
@@ -101,4 +115,25 @@ div, span, p, td {
 .host-table td {
     padding: 2px;
     border: 0px;
+}
+
+.process-details-table {
+    border: 0px;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.process-details-table-header {
+    font-style: bold;
+}
+
+.process-details-table-header:hover {
+    cursor: hand;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.process-details-table-key {
+    padding-right: 10px;
+    font-style: italic;
 }

@@ -2,7 +2,6 @@
 
 var bunyan = require('bunyan');
 var helper = require('./helper.js');
-//TODO: Move to lib.
 var HealthChecker = require('../lib/health_checker');
 var vasync = require('vasync');
 
@@ -30,6 +29,9 @@ TestChecker.prototype.check = function noopCheck(cb) {
         cb(null, { 'success': self.success });
 };
 
+TestChecker.prototype.label = function label() {
+        return 'testChecker';
+}
 
 
 ///--- Tests

@@ -60,6 +60,12 @@
                 }
         }
 
+        //--- Debug
+        function debug() {
+                var self = this;
+                return (self.debug);
+        }
+
         //--- Error
         function displayError(message) {
                 var self = this;
@@ -79,9 +85,119 @@
         }
 
         //--- Main display
+
+        //Process dialog content
+        function processDisplay(process) {
+                var self = this;
+                var d = $('<div></div>');
+
+                var t = $('<table class="process-details-table">');
+                d.append(t);
+
+                //Always Display
+                function tr(c) {
+                        var tr = $('<tr></tr>');
+                        var td = $('<td colspan="2"></td>');
+                        td.append(c);
+                        tr.append(td);
+                        t.append(tr);
+                }
+
+
+                //Healthy text here.
+                var asof = '<div class="tiny-text">as of ' +
+                        (new Date(process.stats.lastChecked)) +
+                        '</div>';
+                if (process.stats.healthy) {
+                        tr('<div class="healthy-text">Healthy</div>' + asof);
+                } else {
+                        var text = "Unhealthy: " +
+                                (process.stats.lastErr.code || 'Unknown');
+                        tr('<div class="unhealthy-text">' + text + '</div>' +
+                           asof);
+                }
+                tr('<hr>');
+
+                //Sparkline: Health
+                var minutes =
+                        (process.history.healthy[0].time -
+                         process.history.healthy[1].time) *
+                        process.history.healthy.length / 60 / 1000;
+
+                tr('<div class="tiny-text">Health, over ' + minutes +
+                   ' minutes:</div>');
+                var hvals = process.history.healthy.map(function (v) {
+                        var hc = v.values[true] || 0;
+                        var fc = v.values[false] || 0;
+                        return fc + ':' + hc;
+                }).reverse();
+                var health = $('<div></div>').sparkline(hvals, {
+                        'type': 'bar',
+                        'stackedBarColor': ['#FF3333', '#00FF00'],
+                        'barWidth': 6,
+                        'barSpacing': 2
+                });
+                tr(health);
+
+                //Sparkline: Latency
+                tr('<div class="tiny-text">Average Latency:</div>');
+                var lvals = process.history.latency.map(function (v) {
+                        if (v.count === 0) {
+                                return 0;
+                        }
+                        //Compute average for each latency...
+                        var vks = Object.keys(v.values);
+                        var tot = 0;
+                        for (var i = 0; i < vks.length; ++i) {
+                                tot += parseInt(vks[i]) * v.values[vks[i]];
+                        }
+                        return (tot / v.count);
+                }).reverse();
+                var latency = $('<div></div>').sparkline(lvals, {
+                        'type': 'line',
+                        'defaultPixelsPerValue': 8
+                });
+                tr(latency);
+
+                tr('<hr>');
+
+                //Collapsible
+                function pth(l) {
+                        t.append('<tr class="process-details-table-header">' +
+                                 '<td colspan="2">' + l + '<td></tr>');
+
+                }
+                function ptr(k, l) {
+                        t.append('<tr class="process-details-table-row">' +
+                                 '<td class="process-details-table-key">' +
+                                 (l || k) + ':</td>' +
+                                 '<td>' + process[k] + '<td></tr>');
+                }
+                pth('Host Details');
+                ptr('uuid');
+                ptr('server');
+                ptr('datacenter', 'dc');
+
+                pth('Checker Details');
+                ptr('checkerType', 'type');
+                ptr('ip');
+                ptr('port');
+
+                //Make sections hideable, thank you stackoverfow
+                //http://stackoverflow.com/questions/16926752/expand-collapse-table-rows-with-jquery
+                $('.process-details-table-header', t).click(function () {
+                        $(this).nextUntil('tr.process-details-table-header').slideToggle(1);
+                });
+
+                //Hide all trs to begin
+                $('.process-details-table-row', t).hide();
+
+                return d;
+        }
+
+        //The little colored squares
         function processWidget(process) {
                 var self = this;
-                var html = '';
                 //Determine health
                 var cssclass = process.stats.healthy ?
                         'healthy-host' : 'unhealthy-host';
@@ -101,30 +217,37 @@
                                        'title="' + process.uuid + '"' +
                                        '></div>');
                                 div.append(dg);
-                                //TODO: Spark lines and other fun!
-                                dg.append('<p><pre>' +
-                                          JSON.stringify(process, null, 2) +
-                                          '</pre></p>');
+                                dg.append(processDisplay(process));
                                 var pos = div.position();
                                 var width = div.width();
+                                var buttons = {
+                                        Ok: function () {
+                                                $(this).dialog('close');
+                                        }
+                                };
+                                if (debug.call(self)) {
+                                        buttons['Debug'] = function () {
+                                                console.log(process);
+                                        }
+                                }
                                 dg.dialog({
                                         dialog: true,
-                                        buttons: {
-                                                Ok: function () {
-                                                        $(this).dialog('close');
-                                                }
-                                        },
+                                        buttons: buttons,
                                         //Good enough for now...
                                         position: [eve.clientX,
                                                    eve.clientY]
                                 });
                         }
                         dg.dialog('open');
+                        //Have to render the sparklines here.  See:
+                        // http://omnipotent.net/jquery.sparkline/#hidden
+                        $.sparkline_display_visible();
                 });
 
                 return div;
         }
 
+        //Host and processs
         function hostWidget(processes) {
                 var self = this;
                 var type = processes[0].hostType;
@@ -164,6 +287,7 @@
                 return table;
         }
 
+        //The big table
         function displayData() {
                 var self = this;
                 var data = self.currentData.checks;
@@ -295,6 +419,8 @@
                                        '</div>')
                                 .append('<div id="hosts"></div>');
                         self.waitingImage = $('<img class="waiting" src="css/images/ui-anim_basic_16x16.gif"/>');
+                        var dls = document.location.search;
+                        self.debug = (dls.indexOf('debug') !== -1);
                         scheduleRefresh.call(self);
                 });
         };

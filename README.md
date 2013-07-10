@@ -25,8 +25,17 @@ Then point your browser to:
 
     http://localhost:8080
 
-You should see one single process `checker-test`.  Click on the green square
-and see what the process has been doing.
+You should see one `host` called `uuid` and two squares next to a processes
+called `checker-test`.  Click on the green square and see details about the
+process, including the port and the health checker type.  Also notice the
+historical healthiness and latency for the health checks.  Click on the red
+square and notice that the error is 'ECONNREFUSED' (or something like that).
+Enable the ping server:
+
+    node ./test/ping_server.js
+
+After a refresh or two, the square will turn green, meaning the process is up
+and healthy.  Click on the square to see the historical trends.
 
 ## License
 
