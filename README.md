@@ -35,7 +35,10 @@ Enable the ping server:
     node ./test/ping_server.js
 
 After a refresh or two, the square will turn green, meaning the process is up
-and healthy.  Click on the square to see the historical trends.
+and healthy.  Click on the square to see the historical trends.  For all of you
+that need some eye-candy before you try it:
+
+![node-checker-screenshot](https://raw.github.com/nfitch/node-checker/master/docs/node-checker-screenshot.png)
 
 ## License
 
