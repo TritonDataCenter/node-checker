@@ -14,7 +14,7 @@ static config files.  For more complicated deployment scenarios, it is expected
 that the consumer of node-checker will implement a system for dynamically adding
 and removing hosts from the health checker.
 
-## Spinnnig up the test server
+## Spinning up the test server
 
 Run:
 
@@ -29,7 +29,7 @@ You should see one `host` called `uuid` and two squares next to a processes
 called `checker-test`.  Click on the green square and see details about the
 process, including the port and the health checker type.  Also notice the
 historical healthiness and latency for the health checks.  Click on the red
-square and notice that the error is 'ECONNREFUSED' (or something like that).
+square and notice that the error is `ECONNREFUSED` (or something like that).
 Enable the ping server:
 
     node ./test/ping_server.js
