@@ -111,10 +111,10 @@
                 if (process.stats.healthy) {
                         tr('<div class="healthy-text">Healthy</div>' + asof);
                 } else {
+                        var lastErr = process.stats.lastErr ||
+                                { 'code': 'Unknown' };
                         var text = "Unhealthy: " +
-                                (process.stats.lastErr.code ||
-                                 process.stats.lastErr.name ||
-                                 'Unknown');
+                                (lastErr.code || lastErr.name || 'Unknown');
                         tr('<div class="unhealthy-text">' + text + '</div>' +
                            asof);
                 }
