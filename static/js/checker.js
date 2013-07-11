@@ -331,15 +331,17 @@
                 var hostTypes = self.currentData.orderings.hostOrder;
                 for (var i = 0; i < hostTypes.length; ++i) {
                         var t = hostTypes[i];
+                        //Means no hosts, so don't display the row...
+                        if (!d[t]) {
+                                continue;
+                        }
+
                         row = $('<tr>');
                         row.append('<td>' + t + '</td>');
                         for (var j = 0; j < dcs.length; ++j) {
                                 var dc = dcs[j];
                                 var td = $('<td>');
-                                var hs = [];
-                                if (d[t]) {
-                                        hs = Object.keys(d[t][dc] || {});
-                                }
+                                var hs = Object.keys(d[t][dc] || {});
                                 for (var k = 0; k < hs.length; ++k) {
                                         var h = hs[k];
                                         var hostW = hostWidget.call(self,

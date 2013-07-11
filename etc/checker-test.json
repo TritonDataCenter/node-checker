@@ -6,6 +6,12 @@
         { "processType": "checker-test", "port": 8080 },
         { "processType": "checker-test", "port": 8090 }
       ]
+    },
+    {
+      "hostType": "checker-test-no-hosts",
+      "processes": [
+        { "processType": "checker-test", "port": 8080 }
+      ]
     }
   ],
   "processTypes": [
