@@ -6,6 +6,13 @@
       "uuid": "uuid-uuid-uuid",
       "datacenter": "nate.dev",
       "server": "uuid-uuid-uuid"
+    },
+    {
+      "hostType": "checker-test",
+      "ip": "127.255.255.255",
+      "uuid": "nonexist",
+      "datacenter": "nate.dev",
+      "server": "nonexist"
     }
   ]
 }

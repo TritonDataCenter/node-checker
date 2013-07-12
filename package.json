@@ -20,6 +20,6 @@
         },
         "scripts": {
                 "start": "node ./server.js",
-                "test": "find test/ -name '*.test.js' | xargs -n 1 ./node_modules/nodeunit/bin/nodeunit"
+                "test": "./tools/check.sh && ./tools/test.sh"
         }
 }

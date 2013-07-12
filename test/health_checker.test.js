@@ -30,8 +30,8 @@ TestChecker.prototype.check = function noopCheck(cb) {
 };
 
 TestChecker.prototype.label = function label() {
-        return 'testChecker';
-}
+        return ('testChecker');
+};
 
 
 ///--- Tests

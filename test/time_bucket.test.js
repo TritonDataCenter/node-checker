@@ -29,7 +29,7 @@ test('simple bucket', function (t) {
                 'periodSeconds': periodSeconds,
                 'numberPeriods': periods,
                 'log': LOG
-        }
+        };
         var tb = new TimeBucket(opts);
 
         //Add a couple
@@ -71,7 +71,7 @@ test('simple bucket, bools', function (t) {
                 'periodSeconds': periodSeconds,
                 'numberPeriods': periods,
                 'log': LOG
-        }
+        };
         var tb = new TimeBucket(opts);
 
         //Add a couple
@@ -103,7 +103,7 @@ test('add outside time period', function (t) {
                 'periodSeconds': periodSeconds,
                 'numberPeriods': periods,
                 'log': LOG
-        }
+        };
         var tb = new TimeBucket(opts);
 
         //Add a couple
@@ -126,7 +126,7 @@ test('period roll over', function (t) {
                 'periodSeconds': periodSeconds,
                 'numberPeriods': periods,
                 'log': LOG
-        }
+        };
         var tb = new TimeBucket(opts);
 
         //Add one for each period

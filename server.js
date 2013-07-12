@@ -63,10 +63,10 @@ function parseOptions() {
 
 //--- Main
 
-var opts = parseOptions();
-opts.log = LOG;
+var _opts = parseOptions();
+_opts.log = LOG;
 
-lib.createAndStartServer(opts, function (err) {
+lib.createAndStartServer(_opts, function (err) {
         if (err) {
                 LOG.fatal(err, 'Error starting server');
                 return;
