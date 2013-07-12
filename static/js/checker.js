@@ -153,7 +153,7 @@
                         for (var i = 0; i < vks.length; ++i) {
                                 tot += parseInt(vks[i]) * v.values[vks[i]];
                         }
-                        return (tot / v.count);
+                        return ((tot / v.count).toFixed(2));
                 }).reverse();
                 var latency = $('<div></div>').sparkline(lvals, {
                         'type': 'line',

@@ -61,6 +61,11 @@ test('simple bucket', function (t) {
         t.equal(1, values[6].count);
         t.equal(0, values[7].count);
 
+        //Check our totals...
+        var totals = tb.totals();
+        t.equal(5, totals.count);
+        t.deepEqual({ '1': 4, '2': 1 }, totals.values);
+
         t.done();
 });
 
@@ -93,6 +98,11 @@ test('simple bucket, bools', function (t) {
         t.deepEqual({ true: 1 }, values[6].values);
         t.deepEqual({}, values[7].values);
 
+        //Check our totals...
+        var totals = tb.totals();
+        t.equal(5, totals.count);
+        t.deepEqual({ true: 3, false: 2 }, totals.values);
+
         t.done();
 });
 
@@ -115,6 +125,11 @@ test('add outside time period', function (t) {
         t.equal(periods, values.length);
         t.deepEqual({ '1': 1 }, values[0].values);
         t.deepEqual({ }, values[1].values);
+
+        //Check our totals...
+        var totals = tb.totals();
+        t.equal(1, totals.count);
+        t.deepEqual({ '1': 1 }, totals.values);
 
         t.done();
 });
@@ -139,15 +154,25 @@ test('period roll over', function (t) {
         t.deepEqual({ '1': 1 }, values[0].values);
         t.deepEqual({ '2': 1 }, values[1].values);
 
+        //Check our totals...
+        var totals = tb.totals();
+        t.equal(2, totals.count);
+        t.deepEqual({ '1': 1, '2': 1 }, totals.values);
+
         setTimeout(function () {
                 values = tb.values();
                 t.equal(periods, values.length);
                 t.deepEqual({ }, values[0].values);
                 t.deepEqual({ '1': 1 }, values[1].values);
 
-                //Finally, verify that that bucket was purged...
+                //Verify that that bucket was purged...
                 values = tb.values({ 'includeAll': false });
                 t.equal(1, Object.keys(values).length);
+
+                //Verify that our totals are correct...
+                totals = tb.totals();
+                t.equal(1, totals.count);
+                t.deepEqual({ '1': 1 }, totals.values);
 
                 t.done();
         }, periodSeconds * 1000);
