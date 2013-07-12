@@ -27,6 +27,7 @@ div, span, p, td {
     cursor: pointer;
 }
 
+/* Set programmatically, but keeping for posterity */
 .healthy-host {
     background-color: #00FF00;
 }

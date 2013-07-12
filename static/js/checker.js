@@ -84,6 +84,43 @@
                 });
         }
 
+        //--- Color Transition
+        //Must send between 0 and 100, 0 being all errors, 100 being all
+        // healthy.
+        function colorForPercent(percent) {
+                                    //Custom colors or 100% and 0%
+                if (percent === 100) {
+                        return '#00FF00';
+                }
+                if (percent === 0) {
+                        return '#FF3333';
+                }
+
+                //For everything else, we return a transition from yellow to
+                // orange.  In order, this how the transition would progress
+                // from orange to yellow:
+                //  r: 255 -> 255  (always stays the same)
+                //  b: 0 -> 0      (always stays the same)
+                //  g: 149 -> 255
+                var max = 255 - 149;
+                var mod = max - Math.floor(max * (percent / 100));
+                var r = 255;
+                var b = 0;
+                var g = 255 - mod;
+                var rgb = 'rgb(' + r + ',' + g + ',' + b + ')';
+                return rgb;
+        }
+
+        function colorForProcess(process) {
+                var total = process.totals.count;
+                var totTrue = process.totals.values[true] !== undefined ?
+                        process.totals.values[true] : 0;
+                if (totTrue === 0 || process.totals.count === undefined) {
+                        return colorForPercent(0);
+                }
+                return colorForPercent(Math.round(totTrue / total * 100));
+        }
+
         //--- Main display
 
         //Process dialog content
@@ -105,19 +142,26 @@
 
 
                 //Healthy text here.
+                var healthydiv = $('<div></div>');
                 var asof = '<div class="tiny-text">as of ' +
                         (new Date(process.stats.lastChecked)) +
                         '</div>';
+                var hdiv;
                 if (process.stats.healthy) {
-                        tr('<div class="healthy-text">Healthy</div>' + asof);
+                        hdiv = $('<div class="healthy-text">Healthy</div>');
                 } else {
                         var lastErr = process.stats.lastErr ||
                                 { 'code': 'Unknown' };
                         var text = "Unhealthy: " +
                                 (lastErr.code || lastErr.name || 'Unknown');
-                        tr('<div class="unhealthy-text">' + text + '</div>' +
-                           asof);
+
+                        hdiv = $('<div class="unhealthy-text">' + text +
+                                 '</div>');
                 }
+                hdiv.css('color', colorForProcess(process));
+                healthydiv.append(hdiv);
+                healthydiv.append(asof);
+                tr(healthydiv);
                 tr('<hr>');
 
                 //Sparkline: Health
@@ -203,6 +247,8 @@
                 //Determine health
                 var cssclass = process.stats.healthy ?
                         'healthy-host' : 'unhealthy-host';
+                var color = process.stats.healthy ?
+                        colorForProcess(process) : colorForPercent(0);
 
                 //Make it easier to see what still needs to be implemented.
                 if (process.checkerType === 'noop') {
@@ -211,6 +257,7 @@
 
                 var div = $('<div></div>');
                 div.addClass(cssclass);
+                div.css('background-color', color);
 
                 var dg = null;
                 div.click(function (eve) {
