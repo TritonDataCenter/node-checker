@@ -4,7 +4,8 @@
       "hostType": "checker-test",
       "processes": [
         { "processType": "checker-test", "port": 8080 },
-        { "processType": "checker-test", "port": 8090 }
+        { "processType": "checker-test", "port": 8090 },
+        { "processType": "noop-test", "port": 8090 }
       ]
     },
     {
@@ -19,6 +20,11 @@
       "processType": "checker-test",
       "checkerType": "http",
       "path": "/ping",
+      "secure": false
+    },
+    {
+      "processType": "noop-test",
+      "checkerType": "noop",
       "secure": false
     }
   ]

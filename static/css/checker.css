@@ -32,12 +32,18 @@ div, span, p, td {
     background-color: #00FF00;
 }
 
-.healthy-text {
-    color: #00FF00;
-}
-
+/* Set programmatically, but keeping for posterity */
 .unhealthy-host {
     background-color: #FF3333;
+}
+
+/* Set programmatically, but keeping for posterity */
+.noop-host {
+    background-color: #3399FF;
+}
+
+.healthy-text {
+    color: #00FF00;
 }
 
 .unhealthy-text {
@@ -46,10 +52,6 @@ div, span, p, td {
 
 .tiny-text {
     font-size: 9px;
-}
-
-.noop-host {
-    background-color: #3399FF;
 }
 
 .status-table {

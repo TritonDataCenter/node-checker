@@ -158,7 +158,6 @@
                         hdiv = $('<div class="unhealthy-text">' + text +
                                  '</div>');
                 }
-                hdiv.css('color', colorForProcess(process));
                 healthydiv.append(hdiv);
                 healthydiv.append(asof);
                 tr(healthydiv);
@@ -253,6 +252,7 @@
                 //Make it easier to see what still needs to be implemented.
                 if (process.checkerType === 'noop') {
                         cssclass = 'noop-host';
+                        color = '#3399FF';
                 }
 
                 var div = $('<div></div>');
