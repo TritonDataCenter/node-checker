@@ -112,13 +112,10 @@
         }
 
         function colorForProcess(process) {
-                var total = process.totals.count;
-                var totTrue = process.totals.values[true] !== undefined ?
-                        process.totals.values[true] : 0;
-                if (totTrue === 0 || process.totals.count === undefined) {
-                        return colorForPercent(0);
-                }
-                return colorForPercent(Math.round(totTrue / total * 100));
+                var percent = (process.history.periodsSinceError === null) ?
+                        100 : Math.round((process.history.periodsSinceError /
+                                          process.history.periods) * 100);
+                return colorForPercent(percent);
         }
 
         //--- Main display
