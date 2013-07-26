@@ -258,15 +258,21 @@
                 var div = $('<div></div>');
                 div.addClass(cssclass);
                 div.css('background-color', color);
+                div.hDialog = null;
 
-                var dg = null;
-                div.click(function (eve) {
-                        if (!dg) {
-                                dg = $('<div class="host-popover" ' +
+                /**
+                 * Don't use this over setting the onclick method:
+                 * div.click(function (eve) {
+                 * For wahever reason, ^^ leaks memory.
+                 * See: nfitch/node-checker#25
+                 */
+                div[0].onclick = function (eve) {
+                        if (!div.hDialog) {
+                                div.hDialog = $('<div class="host-popover" ' +
                                        'title="' + process.uuid + '"' +
                                        '></div>');
-                                div.append(dg);
-                                dg.append(processDisplay(process));
+                                div.append(div.hDialog);
+                                div.hDialog.append(processDisplay(process));
                                 var pos = div.position();
                                 var width = div.width();
                                 var buttons = {
@@ -279,7 +285,7 @@
                                                 console.log(process);
                                         }
                                 }
-                                dg.dialog({
+                                div.hDialog.dialog({
                                         dialog: true,
                                         buttons: buttons,
                                         //Good enough for now...
@@ -287,11 +293,11 @@
                                                    eve.clientY]
                                 });
                         }
-                        dg.dialog('open');
+                        div.hDialog.dialog('open');
                         //Have to render the sparklines here.  See:
                         // http://omnipotent.net/jquery.sparkline/#hidden
                         $.sparkline_display_visible();
-                });
+                }
 
                 return div;
         }
