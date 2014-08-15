@@ -150,7 +150,7 @@
                         var lastErr = process.stats.lastErr ||
                                 { 'code': 'Unknown' };
                         var text = "Unhealthy: " +
-                                (lastErr.code || lastErr.name || 'Unknown');
+                                (lastErr.code || lastErr.name);
 
                         hdiv = $('<div class="unhealthy-text">' + text +
                                  '</div>');
@@ -256,6 +256,14 @@
                 div.addClass(cssclass);
                 div.css('background-color', color);
                 div.hDialog = null;
+                if (!process.stats.healthy) {
+                        var lastErr = process.stats.lastErr ||
+                                { 'code': 'Unknown' };
+                        var text = lastErr.code || lastErr.name;
+                        div.prop('title', text);
+                        div.tooltip();
+                        div.tooltip("option", "tooltipClass", "unhealthy-text");
+                }
 
                 /**
                  * Don't use this over setting the onclick method:
