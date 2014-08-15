@@ -73,3 +73,8 @@ lib.createAndStartServer(_opts, function (err) {
         }
         LOG.info('Server started.');
 });
+
+process.on('uncaughtException', function (err) {
+        LOG.fatal({err: err}, 'uncaughtException (exiting error code 1)');
+        process.exit(1);
+});

@@ -102,7 +102,7 @@ div, span, p, td {
 }
 
 .host-table {
-    display: inline;
+    display: inline-table;
     border: 1px #cccccc solid;
     border-collapse: collapse;
     padding-right: 5px;
