@@ -1,6 +1,6 @@
 #!/bin/bash
 ###############################################################################
-# Copyright 2013 Nate Fitch, All rights reserved.
+# Copyright 2013 Joyent, Inc, All rights reserved.
 # Runs javascriptlint and jsstyle
 ###############################################################################
 

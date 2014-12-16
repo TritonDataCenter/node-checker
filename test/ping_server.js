@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Nate Fitch. All rights reserved.
+// Copyright (c) 2013, Joyent, Inc. All rights reserved.
 
 var http = require('http');
 

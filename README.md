@@ -38,12 +38,12 @@ After a refresh or two, the square will turn green, meaning the process is up
 and healthy.  Click on the square to see the historical trends.  For all of you
 that need some eye-candy before you try it:
 
-![node-checker-screenshot](https://raw.github.com/nfitch/node-checker/master/docs/node-checker-screenshot.png)
+![node-checker-screenshot](https://raw.github.com/joyent/node-checker/master/docs/node-checker-screenshot.png)
 
 ## License
 
 The MIT License (MIT)
-Copyright (c) Nate Fitch
+Copyright (c) Joyent, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -65,4 +65,4 @@ SOFTWARE.
 
 ## Bugs
 
-See <https://github.com/nfitch/node-checker/issues>.
+See <https://github.com/joyent/node-checker/issues>.

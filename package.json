@@ -2,7 +2,7 @@
         "name": "checker",
         "description": "Dashboard for checking distributed system status.",
         "version": "1.0.0",
-        "author": "Nate Fitch",
+        "author": "Joyent, Inc.",
         "main": "./lib/index.js",
         "dependencies": {
                 "assert-plus": "0.1.1",

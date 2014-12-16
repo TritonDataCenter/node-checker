@@ -1,4 +1,4 @@
-// Copyright 2013 Nate Fitch, All rights reserved.
+// Copyright 2013 Joyent, Inc, All rights reserved.
 
 var bunyan = require('bunyan');
 var getopt = require('posix-getopt');

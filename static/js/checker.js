@@ -1,4 +1,4 @@
-// Copyright 2013 Nate Fitch, All rights reserved.
+// Copyright 2013 Joyent, Inc, All rights reserved.
 
 // http://learn.jquery.com/plugins/basic-plugin-creation/
 (function($) {
@@ -269,7 +269,7 @@
                  * Don't use this over setting the onclick method:
                  * div.click(function (eve) {
                  * For wahever reason, ^^ leaks memory.
-                 * See: nfitch/node-checker#25
+                 * See: joyent/node-checker#25
                  */
                 div[0].onclick = function (eve) {
                         if (!div.hDialog) {
