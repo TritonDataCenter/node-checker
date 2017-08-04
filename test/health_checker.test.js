@@ -1,21 +1,18 @@
-// Copyright (c) 2013, Joyent, Inc. All rights reserved.
+// Copyright (c) 2017, Joyent, Inc. All rights reserved.
+
+/*
+ * A very simple health-check test. We implement a "null" healthcheck,
+ * configure a pair of them, and then let them go. We wait 11 seconds
+ * and verify that we have two check and that they ran.
+ *
+ */
 
 var bunyan = require('bunyan');
 var helper = require('./helper.js');
 var HealthChecker = require('../lib/health_checker');
-var vasync = require('vasync');
-
-
-
-///--- Globals
-
-//TODO: Make this an actual test...
-//var test = helper.test;
-
-
+var test = helper.test;
 
 ///--- Objects
-
 function TestChecker(opts) {
         var self = this;
         self.opts = opts;
@@ -37,15 +34,15 @@ TestChecker.prototype.label = function label() {
 ///--- Tests
 
 var testCfg = {
-        //Processes are monitored a certain way.  In this case, the "test"
+        // Processes are monitored a certain way.  In this case, the "test"
         // process has its health checked by the "test checker".  The process
         // type is what links this to processes in the hostDescription.
-        //Checkers have to be registered in code.
+        // Checkers have to be registered in code.
         'processTypes': [
                 { 'processType': 'test',
                   'checkerType': 'testChecker' }
         ],
-        //Hosts have many processes.  The processes have types, which are
+        // Hosts have many processes.  The processes have types, which are
         // described in the processDescription.  The host type is used to
         // link the description with a physical host...
         'hostTypes': [ {
@@ -74,33 +71,27 @@ var LOG = bunyan.createLogger({
 });
 
 var hc = new HealthChecker({ log: LOG });
-vasync.pipeline({
-        'funcs': [
-                function initHc(_, subcb) {
-                        hc.registerChecker({
-                                'label': 'testChecker',
-                                'checker': TestChecker
-                        }, function (err) {
-                                subcb(err);
-                        });
-                },
-                function registerConfig(_, subcb) {
-                        hc.registerFromConfig(testCfg, subcb);
-                },
-                function start(_, subcb) {
-                        hc.start(subcb);
-                },
-                function pause(_, subcb) {
-                        setTimeout(subcb, 11000);
-                },
-                function stop(_, subcb) {
-                        LOG.info({ stats: hc.getStats() }, 'final stats');
-                        hc.stop(subcb);
-                }
-        ]
-}, function (err) {
-        if (err) {
-                LOG.error(err);
-                process.exit(1);
-        }
+
+helper.before(function (cb) {
+        var configAndStart = function() {
+                hc.registerFromConfig(testCfg,
+                                      function () { hc.start(cb) });
+        };
+        hc.registerChecker({
+                'label': 'testChecker',
+                'checker': TestChecker }, configAndStart);
+
+});
+
+helper.after(function(cb) {
+        hc.stop(cb);
+});
+
+test('the checks we configure execute and count up', function(t) {
+        setTimeout(function () {
+                t.equal(hc.checks.length, 2);
+                t.ok(hc.checks[0].numChecks > 0);
+                t.ok(hc.checks[1].numChecks > 0);
+                t.done();
+        }, 11000);
 });
