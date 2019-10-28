@@ -25,11 +25,6 @@ pipeline {
                                 sh('make check')
                             }
                         }
-                        stage('test') {
-                            steps{
-                                sh('make test')
-                            }
-                        }
                     }
                 }
 
@@ -46,11 +41,6 @@ pipeline {
                                 sh('make check')
                             }
                         }
-                        stage('test') {
-                            steps{
-                                sh('make test')
-                            }
-                        }
                     }
                 }
                 
@@ -65,11 +55,6 @@ pipeline {
                         stage('check') {
                             steps{
                                 sh('make check')
-                            }
-                        }
-                        stage('test') {
-                            steps{
-                                sh('make test')
                             }
                         }
                     }
