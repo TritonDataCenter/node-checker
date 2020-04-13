@@ -1,15 +1,15 @@
 {
         "name": "checker",
         "description": "Dashboard for checking distributed system status.",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "author": "Joyent, Inc.",
         "main": "./lib/index.js",
         "dependencies": {
                 "assert-plus": "0.1.1",
                 "bunyan": "0.16.6",
-		"express": "3.0.1",
-		"native-dns": "0.4.1",
-		"posix-getopt": "1.0.0",
+                "express": "3.0.1",
+                "native-dns": "0.4.1",
+                "posix-getopt": "1.0.0",
                 "vasync": "1.3.3"
         },
         "devDependencies": {
